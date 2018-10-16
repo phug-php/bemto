@@ -15,6 +15,7 @@
     "phug/formatter": "^0.5.42"
   },
   "require-dev": {
+    "phug/phug": "^0.3.2",
     "phpunit/phpunit": ">=4.8.35 <6.0",
     "codeclimate/php-test-reporter": "dev-master"
   },
