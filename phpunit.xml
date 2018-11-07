@@ -8,7 +8,7 @@
     >
     <testsuites>
         <testsuite name="plug">
-            <directory suffix="Test.php">tests</directory>
+            <directory suffix="Test.php">tests/</directory>
         </testsuite>
     </testsuites>
     <filter>

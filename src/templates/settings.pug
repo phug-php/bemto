@@ -4,23 +4,27 @@
 
 include tag_metadata.pug
 
--
-  var default_bemto_settings = {
-    'prefix': '',
-    'element': '__',
-    'modifier': '_',
-    'default_tag': 'div',
-    'nosrc_substitute': true,
-    'flat_elements': true,
-    'class_delimiter': ''
-  }
+:php
+  $bemto_settings = [
+    'prefix' => '',
+    'element' => '__',
+    'modifier' => '_',
+    'default_tag' => 'div',
+    'nosrc_substitute' => true,
+    'flat_elements' => true,
+    'class_delimiter' => '',
+  ];
 
-  var bemto_output_settings = ['element', 'modifier'];
+  $bemto_output_settings = ['element', 'modifier'];
 
-  var bemto_settings = default_bemto_settings;
-
-  var get_bemto_settings = function() {
-    var settings = clone(bemto_settings);
+  function get_bemto_settings() {
+    $settings = copyValue($bemto_settings);
+    if (isset($bemto_settings_prefix)) {
+      $settings['prefix'] = $bemto_settings_prefix;
+    }
+    if (isset($bemto_settings_element)) {
+      $settings['element'] = $bemto_settings_element;
+    }
     if (bemto_settings_prefix      !== undefined) { settings['prefix']      = bemto_settings_prefix;      }
     if (bemto_settings_element     !== undefined) { settings['element']     = bemto_settings_element;     }
     if (bemto_settings_modifier    !== undefined) { settings['modifier']    = bemto_settings_modifier;    }
@@ -55,7 +59,7 @@ include tag_metadata.pug
   }
 
 mixin bemto_scope(settings)
-  - var old_bemto_settings = clone(bemto_settings)
+  - var old_bemto_settings = copyValue(bemto_settings)
   - set_bemto_settings(settings)
   block
   - set_bemto_settings(old_bemto_settings)

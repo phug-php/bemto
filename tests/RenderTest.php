@@ -21,6 +21,7 @@ class RenderTest extends TestCase
         parent::setUp();
         $this->renderer = new Renderer([
             'debug' => true,
+            'execution_max_time' => 5000,
             'modules' => [
                 PhugBemto::class,
             ],
@@ -29,7 +30,7 @@ class RenderTest extends TestCase
 
     public function getCases()
     {
-        foreach (glob(__DIR__ . '/cases/*.html') as $file) {
+        foreach (glob(__DIR__ . '/cases/1_basics.html') as $file) {
             yield [
                 file_get_contents($file),
                 preg_replace('/\.html$/', '.pug', $file),

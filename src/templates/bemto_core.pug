@@ -3,41 +3,45 @@
 //- MIT Licensed
 
 //- Some global variables
-- var bemto_chain = []
-- var bemto_chain_contexts = ['block']
+// @node-language php
+-
+  $bemto_chain = [];
+  $bemto_chain_contexts = ['block'];
 
 //- Block
-mixin b(options)
-  - var settings = get_bemto_settings()
+mixin b($options)
+  // @language php
+  - $settings = get_bemto_settings()
+  - $options = (array) ($options ?: [])
   //- TODO: should we make it generic way for other settings too?
-  if options && options.prefix !== undefined
-    - settings.prefix = options.prefix
+  if isset($options, $options['prefix'])
+    - $settings['prefix'] = $options['prefix']
 
   //- Rewriting the class for elements and modifiers
-  - var tag = options && options.tag || ( typeof options == 'string' ? options : '')
-  - var isElement = options && options.isElement
-  - var tagMetadata = options && options.metadata
-  - var block_sets_context = false
-  if attributes.class
+  - $tag = $options ? (is_string($options) ? $options : ($options['tag'] ?: '') : ''
+  - $isElement = $options && $options['isElement']
+  - $tagMetadata = $options ? $options['metadata'] : null
+  - $block_sets_context = false
+  if !empty($attributes['class'])
     //- Creating and normalizing bemto classes
-    - var bemto_classes = attributes.class
-    if bemto_classes instanceof Array
-      - bemto_classes = bemto_classes.join(' ')
-    - bemto_classes = bemto_classes.split(' ')
+    - $bemto_classes = $attributes['class']
+    if is_array($bemto_classes)
+      - $bemto_classes = implode(' ', $bemto_classes)
+    - $bemto_classes = explode(' ', $bemto_classes)
 
 
-    - var bemto_objects = []
-    - var is_first_object = true
-    - var new_context = []
+    - $bemto_objects = []
+    - $is_first_object = true
+    - $new_context = []
 
-    each klass, i in bemto_classes
-      - var bemto_object = {}
-      - var prev_object = bemto_objects[bemto_objects.length - 1]
-      - var sets_context = false
+    each $klass, $i in $bemto_classes
+      - $bemto_object = []
+      - $prev_object = $bemto_objects[count($bemto_objects) - 1]
+      - $sets_context = false
 
       //- Catching the optional tag class
-      if klass.match(/^[A-Z-]+[A-Z0-9-]?$/)
-        - tag = klass.toLowerCase()
+      if preg_match('/^[A-Z-]+[A-Z0-9-]?$/', $klass)
+        - $tag = strtolower($klass)
         - continue
 
 
@@ -117,7 +121,7 @@ mixin b(options)
 
       if bemto_object.context && bemto_object.context.length > 1
         each subcontext, i in bemto_object.context
-          - var sub_object = clone(bemto_object)
+          - var sub_object = copyValue(bemto_object)
           - sub_object['context'] = [subcontext]
           - bemto_objects.push(sub_object)
       else
