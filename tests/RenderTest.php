@@ -46,9 +46,13 @@ class RenderTest extends TestCase
         try {
             $this->assertSame($expectedOutput, $this->renderer->renderFile($sourceFile));
         } catch (\Throwable $exception) {
-            $debugFile = 'debug.php';
-            file_put_contents($debugFile, $this->renderer->compileFile($sourceFile));
-            include $debugFile;
+            try {
+                $debugFile = 'debug.php';
+                file_put_contents($debugFile, $this->renderer->compileFile($sourceFile));
+                include $debugFile;
+            } catch (\Throwable $exception) {
+                throw new \Exception('Error in ' . $sourceFile . "\n" . $exception->getMessage(), 0, $exception);
+            }
         }
     }
 }
