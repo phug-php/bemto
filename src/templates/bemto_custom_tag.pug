@@ -6,7 +6,7 @@
 //- which is not possible due to Jade's wontfixed #659 and #660 bugs.
 
 mixin bemto_custom_inline_tag($customTag, $self_closing)
-  // @language php
+  //- @language php
   - $self_closing = $self_closing ?: false
   != '<'
   = $customTag

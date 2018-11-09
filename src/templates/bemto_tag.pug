@@ -6,81 +6,82 @@ include bemto_custom_tag.pug
 
 //- Tag mixin, used for tweaking what tag we are throwing and do we need to wrap anything here
 
-mixin bemto_tag(tag, tagMetadata)
-  - var settings = get_bemto_settings()
-  - tagMetadata = tagMetadata || {}
+mixin bemto_tag($tag, $tagMetadata)
+  //- @language php
+  - $settings = $get_bemto_settings()
+  - $tagMetadata = (array) ($tagMetadata ?: [])
 
   //- rewriting tag name on different contexts
-  - var newTag = tag || settings['default_tag']
-  - var contextIndex = bemto_chain_contexts.length
+  - $newTag = $tag ?: $settings['default_tag']
+  - $contextIndex = count($bemto_chain_contexts)
 
   //- Checks for contexts if no tag given
-  if !tag
-    if bemto_chain_contexts[contextIndex-1] === 'inline'
-      - newTag = 'span'
-    else if bemto_chain_contexts[contextIndex-1] === 'list'
-      - newTag = 'li'
-    else if bemto_chain_contexts[contextIndex-1] === 'optionlist'
-      - newTag = 'option'
+  if !$tag
+    if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'inline'
+      - $newTag = 'span'
+    else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'list'
+      - $newTag = 'li'
+    else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'optionlist'
+      - $newTag = 'option'
 
   //- Attributes context checks
   //- Only when no actual tag is given
-  if !tag || tag == 'span' || tag == 'div'
-    if attributes.href
-      - newTag = 'a'
-    if attributes.for
-      - newTag = 'label'
-    if attributes.type
+  if !$tag || $tag === 'span' || $tag === 'div'
+    if isset($attributes['href']) && $attributes['href']
+      - $newTag = 'a'
+    if isset($attributes['for']) && $attributes['for']
+      - $newTag = 'label'
+    if isset($attributes['type']) && $attributes['type']
       //- TODO: Add more checks for different type value patterns
-      - newTag = block ? 'button' : 'input'
-    else if attributes.src
-      - newTag = 'img'
+      - $newTag = $block ? 'button' : 'input'
+    else if isset($attributes['src']) && $attributes['src']
+      - $newTag = 'img'
 
   //- Contextual wrappers
-  if bemto_chain_contexts[contextIndex-1] === 'list' && newTag !== 'li'
+  if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'list' && $newTag !== 'li'
     | <li>
-  else if bemto_chain_contexts[contextIndex-1] !== 'list' && bemto_chain_contexts[contextIndex-1] !== 'pseudo-list' && newTag === 'li'
+  else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] !== 'list' && $bemto_chain_contexts[$contextIndex - 1] !== 'pseudo-list' && $newTag === 'li'
     | <ul>
-    - bemto_chain_contexts[bemto_chain_contexts.length] = 'pseudo-list'
-  else if bemto_chain_contexts[contextIndex-1] === 'pseudo-list' && newTag !== 'li'
+    - $bemto_chain_contexts[count($bemto_chain_contexts)] = 'pseudo-list'
+  else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'pseudo-list' && $newTag !== 'li'
     | </ul>
-    - bemto_chain_contexts = bemto_chain_contexts.splice(0,bemto_chain_contexts.length-1)
+    - $bemto_chain_contexts = array_splice($bemto_chain_contexts, 0, -1)
 
   //- Setting context
-  - var content_type = tagMetadata.content_type || get_bemto_tag_content_type(newTag)
-  - bemto_chain_contexts[bemto_chain_contexts.length] = content_type
+  - $content_type = isset($tagMetadata['content_type']) && $tagMetadata['content_type'] ? $tagMetadata['content_type'] : get_bemto_tag_content_type($newTag)
+  - $bemto_chain_contexts[count($bemto_chain_contexts)] = $content_type
 
-  if newTag == 'img'
+  if $newTag === 'img'
     //- If there is no title we don't need it to show even if there is some alt
-    if attributes.alt && !attributes.title
-      - attributes.title = ''
+    if isset($attributes['alt']) && $attributes['alt'] && !(isset($attributes['title']) && $attributes['title'])
+      - $attributes['title'] = ''
     //- If we have title, we must have it in alt if it's not set
-    if attributes.title && !attributes.alt
-      - attributes.alt = attributes.title
-    if !attributes.alt
-      - attributes.alt = ''
-    if attributes.alt === ''
-      - attributes.role = 'presentation'
-    if !attributes.src
-      if settings.nosrc_substitute === true
-        - attributes.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-      else if settings.nosrc_substitute
-        - attributes.src = settings.nosrc_substitute
+    if isset($attributes['title']) && $attributes['title'] && !(isset($attributes['alt']) && $attributes['alt'])
+      - $attributes['alt'] = $attributes['title']
+    if !(isset($attributes['alt']) && $attributes['alt'])
+      - $attributes['alt'] = ''
+    if isset($attributes['alt']) && $attributes['alt'] === ''
+      - $attributes['role'] = 'presentation'
+    if !(isset($attributes['src']) && $attributes['src'])
+      if isset($attributes['nosrc_substitute']) && $attributes['nosrc_substitute'] === true
+        - $attributes['src'] = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
+      else if isset($attributes['nosrc_substitute']) && $attributes['nosrc_substitute']
+        - $attributes['src'] = $attributes['nosrc_substitute']
 
-  if newTag == 'input'
-    if !attributes.type
-      - attributes.type = "text"
+  if $newTag === 'input'
+    if !!(isset($attributes['type']) && $attributes['type'])
+      - $attributes['type'] = 'text'
 
-  if newTag == 'main'
-    if !attributes.role
-      - attributes.role = 'main'
-  if newTag == 'html'
+  if $newTag === 'main'
+    if !!(isset($attributes['role']) && $attributes['role'])
+      - $attributes['role'] = 'main'
+  if $newTag === 'html'
     <!DOCTYPE html>
 
-  +bemto_custom_tag(newTag, tagMetadata)&attributes(attributes)
-    if block
+  +bemto_custom_tag($newTag, $tagMetadata)&attributes($attributes)
+    if $block
       block
 
   //- Closing all the wrapper tails
-  if bemto_chain_contexts[contextIndex-1] === 'list' && newTag != 'li'
+  if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'list' && $newTag !== 'li'
     | </li>

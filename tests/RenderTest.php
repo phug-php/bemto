@@ -43,9 +43,12 @@ class RenderTest extends TestCase
      */
     public function testRender($expectedOutput, $sourceFile)
     {
+        $error = null;
+        $actualOutput = null;
         try {
-            $this->assertSame($expectedOutput, $this->renderer->renderFile($sourceFile));
+            $actualOutput = $this->renderer->renderFile($sourceFile);
         } catch (\Throwable $exception) {
+            $error = $exception;
             try {
                 $debugFile = 'debug.php';
                 file_put_contents($debugFile, $this->renderer->compileFile($sourceFile));
@@ -54,5 +57,10 @@ class RenderTest extends TestCase
                 throw new \Exception('Error in ' . $sourceFile . "\n" . $exception->getMessage(), 0, $exception);
             }
         }
+        if ($error) {
+            throw $error;
+        }
+
+        $this->assertSame($expectedOutput, $actualOutput);
     }
 }
