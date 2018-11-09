@@ -132,7 +132,7 @@ mixin b($options)
       //- Use only the block's name for context if we're at strict setting
       if $settings['flat_elements']
         each $subcontext, $i in $new_context
-          if preg_match('/^(.*?[A-Za-z0-9])(?!' . $settings['modifier'] . '[A-Za-z0-9])' . $settings['element'] . '.+$/', $subcontext, $context_with_element
+          if preg_match('/^(.*?[A-Za-z0-9])(?!' . $settings['modifier'] . '[A-Za-z0-9])' . $settings['element'] . '.+$/', $subcontext, $context_with_element)
             - $new_context[$i] = $context_with_element[1]
       - $bemto_chain[] = $new_context
 
@@ -171,9 +171,9 @@ mixin b($options)
 
 //- Element
 mixin e($options)
-  if $options && is_string($options)
-    - $options = ['tag' => $options]
-  else if (!$options)
+  unless $options
     - $options = []
+  else if is_string($options)
+    - $options = ['tag' => $options]
   - $options['isElement'] = true
   +b($options)&attributes($attributes): block
