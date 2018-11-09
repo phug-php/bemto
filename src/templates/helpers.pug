@@ -1,11 +1,13 @@
 //- @node-language php
 -
-  function copyValue($value) {
+  if (!function_exists('copyValue')) {
+    function copyValue($value) {
       if (is_array($value)) {
-          return array_map('copyValue', $value);
+        return array_map('copyValue', $value);
       }
       if (is_object($value)) {
-          return clone $value;
+        return clone $value;
       }
       return $value;
+    }
   }

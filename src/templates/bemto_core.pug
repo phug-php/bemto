@@ -18,9 +18,9 @@ mixin b($options)
     - $settings['prefix'] = $options['prefix']
 
   //- Rewriting the class for elements and modifiers
-  - $tag = $options ? (is_string($options) ? $options : ($options['tag'] ?: '')) : ''
-  - $isElement = $options && $options['isElement']
-  - $tagMetadata = $options ? $options['metadata'] : null
+  - $tag = $options ? (is_string($options) ? $options : (isset($options['tag']) ? $options['tag'] : '')) : ''
+  - $isElement = $options && isset($options['isElement']) && $options['isElement']
+  - $tagMetadata = $options && isset($options['metadata']) ? $options['metadata'] : null
   - $block_sets_context = false
   if !empty($attributes['class'])
     //- Creating and normalizing bemto classes
@@ -28,7 +28,6 @@ mixin b($options)
     if is_array($bemto_classes)
       - $bemto_classes = implode(' ', $bemto_classes)
     - $bemto_classes = explode(' ', $bemto_classes)
-
 
     - $bemto_objects = []
     - $is_first_object = true

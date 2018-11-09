@@ -4,24 +4,6 @@
 
 //- @language php
 -
-  function get_bemto_tag_type($tagName) {
-    $result = 'block';
-    if (isset($bemto_tag_metadata[$tagName]) && $bemto_tag_metadata[$tagName]) {
-      $result = isset($bemto_tag_metadata[$tagName]['type']) && $bemto_tag_metadata[$tagName]['type'] ? $bemto_tag_metadata[$tagName] : $result;
-    }
-
-    return $result;
-  }
-
-  function get_bemto_tag_content_type($tagName) {
-    $result = 'block';
-    if (isset($bemto_tag_metadata[$tagName]) && $bemto_tag_metadata[$tagName]) {
-      $result = isset($bemto_tag_metadata[$tagName]['content_type']) && $bemto_tag_metadata[$tagName]['content_type'] ? $bemto_tag_metadata[$tagName] : $result;
-    }
-
-    return $result;
-  }
-
   $bemto_tag_metadata = [
     'hr' => [
       'type' => 'self_closing'
@@ -138,3 +120,21 @@
       'content_type' => 'optionlist'
     ]
   ];
+
+  $get_bemto_tag_type = function ($tagName) use ($bemto_tag_metadata) {
+    $result = 'block';
+    if (isset($bemto_tag_metadata[$tagName]) && $bemto_tag_metadata[$tagName]) {
+      $result = isset($bemto_tag_metadata[$tagName]['type']) && $bemto_tag_metadata[$tagName]['type'] ? $bemto_tag_metadata[$tagName] : $result;
+    }
+
+    return $result;
+  };
+
+  $get_bemto_tag_content_type = function ($tagName) use ($bemto_tag_metadata) {
+    $result = 'block';
+    if (isset($bemto_tag_metadata[$tagName]) && $bemto_tag_metadata[$tagName]) {
+      $result = isset($bemto_tag_metadata[$tagName]['content_type']) && $bemto_tag_metadata[$tagName]['content_type'] ? $bemto_tag_metadata[$tagName] : $result;
+    }
+
+    return $result;
+  };

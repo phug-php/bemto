@@ -21,7 +21,7 @@ class RenderTest extends TestCase
         parent::setUp();
         $this->renderer = new Renderer([
             'debug' => true,
-            'execution_max_time' => 5000,
+            'execution_max_time' => 30000,
             'modules' => [
                 PhugBemto::class,
             ],
@@ -60,6 +60,9 @@ class RenderTest extends TestCase
         if ($error) {
             throw $error;
         }
+
+        var_dump($actualOutput);
+        exit;
 
         $this->assertSame($expectedOutput, $actualOutput);
     }

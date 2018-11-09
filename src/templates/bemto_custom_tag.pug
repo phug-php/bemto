@@ -34,7 +34,7 @@ mixin bemto_custom_tag($customTag, $tagMetadata)
     - $selfClosing = true
     - $customTag = substr($customTag, 0, -1)
 
-  - $tag_type = isset($tagMetadata['type']) && $tagMetadata['type'] ? $tagMetadata['type'] : get_bemto_tag_type($customTag)
+  - $tag_type = isset($tagMetadata['type']) && $tagMetadata['type'] ? $tagMetadata['type'] : $get_bemto_tag_type($customTag)
 
   case $tag_type
     when 'inline'

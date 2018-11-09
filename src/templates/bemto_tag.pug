@@ -47,9 +47,10 @@ mixin bemto_tag($tag, $tagMetadata)
     | </ul>
     - $bemto_chain_contexts = array_splice($bemto_chain_contexts, 0, -1)
 
+
   //- Setting context
-  - $content_type = isset($tagMetadata['content_type']) && $tagMetadata['content_type'] ? $tagMetadata['content_type'] : get_bemto_tag_content_type($newTag)
-  - $bemto_chain_contexts[count($bemto_chain_contexts)] = $content_type
+  - $content_type = isset($tagMetadata['content_type']) && $tagMetadata['content_type'] ? $tagMetadata['content_type'] : $get_bemto_tag_content_type($newTag)
+  - $bemto_chain_contexts[] = $content_type
 
   if $newTag === 'img'
     //- If there is no title we don't need it to show even if there is some alt
@@ -69,14 +70,15 @@ mixin bemto_tag($tag, $tagMetadata)
         - $attributes['src'] = $attributes['nosrc_substitute']
 
   if $newTag === 'input'
-    if !!(isset($attributes['type']) && $attributes['type'])
+    if !(isset($attributes['type']) && $attributes['type'])
       - $attributes['type'] = 'text'
 
   if $newTag === 'main'
-    if !!(isset($attributes['role']) && $attributes['role'])
+    if !(isset($attributes['role']) && $attributes['role'])
       - $attributes['role'] = 'main'
+
   if $newTag === 'html'
-    <!DOCTYPE html>
+    doctype html
 
   +bemto_custom_tag($newTag, $tagMetadata)&attributes($attributes)
     if $block
