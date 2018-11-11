@@ -6,8 +6,8 @@ include bemto_custom_tag.pug
 
 //- Tag mixin, used for tweaking what tag we are throwing and do we need to wrap anything here
 
+//- @node-language php
 mixin bemto_tag($tag, $tagMetadata)
-  //- @language php
   - $settings = $get_bemto_settings()
   - $tagMetadata = (array) ($tagMetadata ?: [])
 

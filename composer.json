@@ -17,12 +17,18 @@
   "require-dev": {
     "phug/phug": "^0.3.2",
     "phpunit/phpunit": ">=4.8.35 <6.0",
-    "codeclimate/php-test-reporter": "dev-master"
+    "codeclimate/php-test-reporter": "dev-master",
+    "mihaeu/html-formatter": "^1.0"
   },
   "minimum-stability": "stable",
   "autoload": {
     "psr-0": {
       "PhugBemto": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\Bemto\\": "tests/"
     }
   }
 }

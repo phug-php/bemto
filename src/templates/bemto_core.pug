@@ -7,21 +7,27 @@
 -
   $bemto_chain = [];
   $bemto_chain_contexts = ['block'];
+  $bemto_chain_splice = 0;
 
 //- Block
 mixin b($options)
-  //- @language php
-  - $settings = $get_bemto_settings()
-  - $options = (array) ($options ?: [])
+  -
+    $get_context = function ($ctx) { $ctx = empty($ctx['context']) ? '' : $ctx['context']; return is_string($ctx) ? $ctx : $ctx[0]; };
+    $settings = $get_bemto_settings();
   //- TODO: should we make it generic way for other settings too?
-  if isset($options, $options['prefix'])
+  //- @node-language php
+  if is_array($options) && isset($options['prefix'])
     - $settings['prefix'] = $options['prefix']
 
   //- Rewriting the class for elements and modifiers
-  - $tag = $options ? (is_string($options) ? $options : (isset($options['tag']) ? $options['tag'] : '')) : ''
-  - $isElement = $options && isset($options['isElement']) && $options['isElement']
-  - $tagMetadata = $options && isset($options['metadata']) ? $options['metadata'] : null
-  - $block_sets_context = false
+  //- @node-language php
+  -
+    $tag = $options ? (is_string($options) ? $options : (isset($options['tag']) ? $options['tag'] : '')) : '';
+    $options = (array) ($options ?: []);
+    $isElement = $options && isset($options['isElement']) && $options['isElement'];
+    $tagMetadata = $options && isset($options['metadata']) ? $options['metadata'] : null;
+    $block_sets_context = false;
+  //- @node-language php
   if !empty($attributes['class'])
     //- Creating and normalizing bemto classes
     - $bemto_classes = $attributes['class']
@@ -36,7 +42,6 @@ mixin b($options)
     each $klass, $i in $bemto_classes
       - $bemto_object = []
       - $bemto_objects_count = count($bemto_objects)
-      - $prev_object = $bemto_objects_count ? $bemto_objects[$bemto_objects_count - 1] : null
       - $sets_context = false
 
       //- Catching the optional tag class
@@ -52,10 +57,10 @@ mixin b($options)
 
       //- If the class is a modifier, add it to the previous object
       //- FIXME: `+b._mod._mod` — raw classes should be treated as raw ones
-      - if (preg_match('/^(?!' . $settings['element'] . '[A-Za-z0-9])' . $settings['modifier'] . '(.+)$/', $klass, $modifier_class) && $prev_object && $prev_object['name'])
-        if !isset($prev_object['modifiers']) || !$prev_object['modifiers']
-          - $prev_object['modifiers'] = []
-        - $prev_object['modifiers'][] = $modifier_class[1]
+      - if (preg_match('/^(?!' . $settings['element'] . '[A-Za-z0-9])' . $settings['modifier'] . '(.+)$/', $klass, $modifier_class) && $bemto_objects_count && isset($bemto_objects[$bemto_objects_count - 1]['name']) && $bemto_objects[$bemto_objects_count - 1]['name'])
+        if !isset($bemto_objects[$bemto_objects_count - 1]['modifiers']) || !$bemto_objects[$bemto_objects_count - 1]['modifiers']
+          - $bemto_objects[$bemto_objects_count - 1]['modifiers'] = []
+        - $bemto_objects[$bemto_objects_count - 1]['modifiers'][] = $modifier_class[1]
         - continue
 
 
@@ -78,9 +83,9 @@ mixin b($options)
       - if (preg_match('/^(.*?[A-Za-z0-9])(?!' . $settings['element'] . '[A-Za-z0-9])' . $settings['modifier'] . '(.+)$/', $klass, $name_with_modifier))
         - $klass = $name_with_modifier[1]
 
-        if !isset($prev_object['modifiers']) || !$prev_object['modifiers']
-          - $prev_object['modifiers'] = []
-        - $prev_object['modifiers'][] = $name_with_modifier[2]
+        if !isset($bemto_object['modifiers']) || !$bemto_object['modifiers']
+          - $bemto_object['modifiers'] = []
+        - $bemto_object['modifiers'][] = $name_with_modifier[2]
 
       - $found_prefix = ''
       - $prefix_regex_string = '()?'
@@ -92,9 +97,9 @@ mixin b($options)
         - $prefix_regex_test = []
         if is_array($prefix)
           each $value, $key in $prefix
-            if is_string($key) && $key != '' && !in_array($key, $prefix_regex_test)
+            if is_string($key) && $key !== '' && !in_array($key, $prefix_regex_test)
               - $prefix_regex_test[] = $key
-            if is_string($value) && $value != '' && !in_array($value, $prefix_regex_test)
+            if is_string($value) && $value !== '' && !in_array($value, $prefix_regex_test)
               - $prefix_regex_test[] = $value
 
           - $prefix_regex_string = '(' . implode('|', $prefix_regex_test) . ')?'
@@ -108,7 +113,7 @@ mixin b($options)
 
 
       - if ($sets_context && preg_match('/^[a-zA-Z0-9]+.*/', $klass))
-        - $new_context[] = isset($bemto_object['context']) && $bemto_object['context'] ? ($bemto_object['context'] . $settings['element'] . $klass) : ($bemto_object['prefix'] . $klass)
+        - $new_context[] = isset($bemto_object['context']) && $bemto_object['context'] ? ($get_context($bemto_object) . $settings['element'] . $klass) : ($bemto_object['prefix'] . $klass)
 
       - $bemto_object['name'] = $klass
       - $is_first_object = false
@@ -122,9 +127,9 @@ mixin b($options)
         - $bemto_objects[] = $bemto_object
 
     //- If no custom context is set, use the first proper object
-    - if (!$isElement && !count($new_context) && $bemto_objects[0] && isset($bemto_objects[0]['name']) && preg_match('/^[a-zA-Z0-9]+.*/', $bemto_objects[0]['name']))
+    - if (!$isElement && !count($new_context) && isset($bemto_objects[0]) && $bemto_objects[0] && isset($bemto_objects[0]['name']) && preg_match('/^[a-zA-Z0-9]+.*/', $bemto_objects[0]['name']))
       - $bemto_objects[0]['is_context'] = true
-      - $new_context[] = isset($bemto_objects[0]['context']) && $bemto_objects[0]['context'] ? ($bemto_objects[0]['context'] . $settings['element'] . $bemto_objects[0]['name']) : ($bemto_objects[0]['prefix'] . $bemto_objects[0]['name'])
+      - $new_context[] = isset($bemto_objects[0]['context']) && $bemto_objects[0]['context'] ? ($get_context($bemto_objects[0]) . $settings['element'] . $bemto_objects[0]['name']) : ($bemto_objects[0]['prefix'] . $bemto_objects[0]['name'])
       - $block_sets_context = true
 
     if count($new_context)
@@ -142,16 +147,20 @@ mixin b($options)
         if isset($bemto_object['name']) && $bemto_object['name']
           - $start = $bemto_object['prefix']
           if isset($bemto_object['context']) && $bemto_object['context']
-            - $start = $bemto_object['context'] . $settings['output_element']
+            - $start = $get_context($bemto_object) . $settings['output_element']
           - $new_classes[] = $start . $bemto_object['name']
           if !empty($bemto_object['modifiers'])
             each $modifier in $bemto_object['modifiers']
-              - $new_classes[] = $start . $bemto_object['name'] . $settings['output_modifier'] + $modifier
+              - $new_classes[] = $start . $bemto_object['name'] . $settings['output_modifier'] . $modifier
 
       - $delimiter = isset($settings['class_delimiter']) && $settings['class_delimiter'] ? (' ' . $settings['class_delimiter'] . ' ') : ' '
-      - $attributes['class'] = strtr(implode($delimiter, $new_classes), ['-' => '%DASH%', '_' => '%UNDERSCORE%'])
+      - $attributes['class'] = strtr(implode($delimiter, $new_classes), ['%DASH%' => '-', '%UNDERSCORE%' => '_'])
     else
       - $attributes['class'] = null
+
+  //- @node-language php
+  if !$isElement && $block_sets_context
+    - $bemto_chain_splice++
 
   //- @node-language php
   if $block
@@ -162,10 +171,12 @@ mixin b($options)
     //- @node-language php
     +bemto_tag($tag, $tagMetadata)&attributes($attributes)
 
-  //- @language php
   //- Closing actions (remove the current block from the chain)
-  if !$isElement && $block_sets_context
+  //- @node-language php
+  if $bemto_chain_splice > 0
+    - $bemto_chain_splice--
     - $bemto_chain = array_splice($bemto_chain, 0, -1)
+  //- @node-language php
   - $bemto_chain_contexts = array_splice($bemto_chain_contexts, 0, -1)
 
 //- Element
