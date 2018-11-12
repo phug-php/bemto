@@ -6,7 +6,7 @@ class RenderTest extends AbstractTestCase
 {
     public function getCases()
     {
-        foreach (glob(__DIR__ . '/cases/1_basics.html') as $file) {
+        foreach (glob(__DIR__ . '/cases/*.html') as $file) {
             yield [
                 file_get_contents($file),
                 preg_replace('/\.html$/', '.pug', $file),

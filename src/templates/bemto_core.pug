@@ -10,6 +10,7 @@
   $bemto_chain_splice = 0;
 
 //- Block
+//- @node-language php
 mixin b($options)
   -
     $get_context = function ($ctx) { $ctx = empty($ctx['context']) ? '' : $ctx['context']; return is_string($ctx) ? $ctx : $ctx[0]; };
@@ -180,10 +181,15 @@ mixin b($options)
   - $bemto_chain_contexts = array_splice($bemto_chain_contexts, 0, -1)
 
 //- Element
+//- @node-language php
 mixin e($options)
+  //- @node-language php
   unless $options
     - $options = []
+  //- @node-language php
   else if is_string($options)
     - $options = ['tag' => $options]
+  //- @node-language php
   - $options['isElement'] = true
+  //- @node-language php
   +b($options)&attributes($attributes): block

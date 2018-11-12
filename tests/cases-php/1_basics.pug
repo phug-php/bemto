@@ -34,7 +34,7 @@ p
 
 // Tag as option
 p
-  +b({tag: 'span'}).foo baz
+  +b(['tag' => 'span']).foo baz
 
 // Backwards compatible way
 p
@@ -43,7 +43,7 @@ p
 
 // Self-closing tag as option
 p
-  +b({tag: 'closey/'}).foo baz
+  +b(['tag' => 'closey/']).foo baz
 
 // Empty block and empty element
 +b
