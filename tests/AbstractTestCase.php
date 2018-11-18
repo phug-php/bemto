@@ -33,10 +33,12 @@ abstract class AbstractTestCase extends TestCase
     {
         $error = null;
         $actualOutput = null;
+
         try {
             $actualOutput = $this->renderer->renderFile($sourceFile);
         } catch (\Throwable $exception) {
             $error = $exception;
+
             try {
                 $debugFile = 'debug.php';
                 file_put_contents($debugFile, $this->renderer->compileFile($sourceFile));
@@ -45,6 +47,7 @@ abstract class AbstractTestCase extends TestCase
                 throw new \Exception('Error in ' . $sourceFile . "\n" . $exception->getMessage(), 0, $exception);
             }
         }
+
         if ($error) {
             throw $error;
         }
