@@ -5,12 +5,6 @@ php:
   - 7.1
   - 7.2
 
-matrix:
-  include:
-    - php: hhvm
-      dist: trusty
-      sudo: required
-
 before_script:
   - travis_retry composer self-update
   - travis_retry composer install --no-interaction --prefer-source --dev
@@ -26,4 +20,4 @@ after_success:
 
 addons:
   code_climate:
-    repo_token: 2ada4e362b8772834b48da9df10dcb3b824b03b4ef5cd79f7cafca5c94595c5e
+    repo_token: 0bce406c2d750369b0e86c0c50375a829a07135d1f88f8f6dd6c44dce62635e3
