@@ -41,8 +41,6 @@ and it's also compatible with [Pug-php](https://github.com/pug-php/pug).
 
 ## Install & Use
 
-### Cloning
-
 ```sh
 composer require pug/bemto
 ```
