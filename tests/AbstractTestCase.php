@@ -2,10 +2,10 @@
 
 namespace Tests\Bemto;
 
-use Mihaeu\HtmlFormatter;
 use PHPUnit\Framework\TestCase;
 use Phug\Renderer;
 use PhugBemto\PhugBemto;
+use XhtmlFormatter\Formatter;
 
 abstract class AbstractTestCase extends TestCase
 {
@@ -54,12 +54,15 @@ abstract class AbstractTestCase extends TestCase
 
     protected static function htmlStandardize($html)
     {
-        $html = trim(HtmlFormatter::format($html));
+        $formatter = new Formatter();
+
+        $html = trim($formatter->format($html));
         $html = str_replace("\r", '', preg_replace('/\s+$/m', '', $html));
         $html = preg_replace('/\n{2,}$/', "\n", $html);
         $html = preg_replace('/<!--\s*(\S(.*\S)?)\s*-->/U', '<!-- $1 -->', $html);
-        $html = preg_replace('/(<[^\/>]+>)\s+<\//', '$1</', $html);
+        $html = preg_replace('/(<[a-z][^>]*>)\s+<\//', '$1</', $html);
         $html = preg_replace('/([a-z"\'])\/>/', '$1 />', $html);
+        $html = preg_replace('/(<[a-z][^>]*)\s\/>/', '$1>', $html);
 
         return $html;
     }

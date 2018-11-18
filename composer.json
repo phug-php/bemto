@@ -18,7 +18,7 @@
     "phug/phug": "^0.3.2",
     "phpunit/phpunit": ">=4.8.35 <6.0",
     "codeclimate/php-test-reporter": "dev-master",
-    "mihaeu/html-formatter": "^1.0",
+    "machy8/xhtml-formatter": "^1.0",
     "js-phpize/js-phpize-phug": "^2.1"
   },
   "minimum-stability": "stable",

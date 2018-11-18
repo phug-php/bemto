@@ -4,7 +4,6 @@
 
 include tag_metadata.pug
 
-//- @node-language php
 -
   $bemto_settings = [
     'prefix' => '',
@@ -23,7 +22,7 @@ include tag_metadata.pug
   if (!isset($bemto_settings_modifier)) { $bemto_settings_modifier = null; }
   if (!isset($bemto_settings_default_tag)) { $bemto_settings_default_tag = null; }
 
-  $get_bemto_settings = function () use ($bemto_settings, $bemto_output_settings, $bemto_settings_prefix, $bemto_settings_element, $bemto_settings_modifier, $bemto_settings_default_tag) {
+  $get_bemto_settings = function () use (&$bemto_settings, &$bemto_output_settings, &$bemto_settings_prefix, &$bemto_settings_element, &$bemto_settings_modifier, &$bemto_settings_default_tag) {
     $settings = copyValue($bemto_settings);
     if (isset($bemto_settings_prefix)) {
       $settings['prefix'] = $bemto_settings_prefix;
@@ -45,21 +44,55 @@ include tag_metadata.pug
     return $settings;
   };
 
-  $set_bemto_setting = function ($name, $value) use ($bemto_settings, $bemto_settings_prefix, $bemto_settings_element, $bemto_settings_modifier, $bemto_settings_default_tag) {
+  $set_bemto_setting = function ($name, $value) use (&$bemto_settings, &$bemto_settings_prefix, &$bemto_settings_element, &$bemto_settings_modifier, &$bemto_settings_default_tag) {
     $bemto_settings[$name] = $value;
 
     //- Resetting the old variable-type setting
-    if ($name === 'prefix' && !isset($bemto_settings_prefix)) { $bemto_settings_prefix = null; }
-    if ($name === 'element' && !isset($bemto_settings_element)) { $bemto_settings_element = null; }
-    if ($name === 'modifier' && !isset($bemto_settings_modifier)) { $bemto_settings_modifier = null; }
-    if ($name === 'default_tag' && !isset($bemto_settings_default_tag)) { $bemto_settings_default_tag = null; }
+    if ($name === 'prefix' && isset($bemto_settings_prefix)) { $bemto_settings_prefix = null; }
+    if ($name === 'element' && isset($bemto_settings_element)) { $bemto_settings_element = null; }
+    if ($name === 'modifier' && isset($bemto_settings_modifier)) { $bemto_settings_modifier = null; }
+    if ($name === 'default_tag' && isset($bemto_settings_default_tag)) { $bemto_settings_default_tag = null; }
   };
 
-  $set_bemto_settings = function ($settings) use ($set_bemto_setting) {
+  $set_bemto_settings = function ($settings) use (&$set_bemto_setting) {
     foreach ($settings as $name => $value) {
       $set_bemto_setting($name, $value);
     }
   };
+
+  if (!isset($GLOBALS['__bemto'])) {
+    $GLOBALS['__bemto'] = new stdClass();
+  }
+  $bemto = $GLOBALS['__bemto'];
+  $bemto->get_bemto_settings = $get_bemto_settings;
+
+  if (!function_exists('get_bemto_settings')) {
+    function get_bemto_settings() {
+      global $__bemto;
+
+      return call_user_func($__bemto->get_bemto_settings);
+    }
+  }
+
+  $bemto->set_bemto_setting = $set_bemto_setting;
+
+  if (!function_exists('set_bemto_setting')) {
+    function set_bemto_setting($name, $value) {
+      global $__bemto;
+
+      return call_user_func($__bemto->set_bemto_setting, $name, $value);
+    }
+  }
+
+  $bemto->set_bemto_settings = $set_bemto_settings;
+
+  if (!function_exists('set_bemto_settings')) {
+    function set_bemto_settings($settings) {
+      global $__bemto;
+
+      return call_user_func($__bemto->set_bemto_settings, $settings);
+    }
+  }
 
 mixin bemto_scope($settings)
   - $old_bemto_settings = copyValue($bemto_settings)

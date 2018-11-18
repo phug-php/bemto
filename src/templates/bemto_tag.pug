@@ -6,7 +6,6 @@ include bemto_custom_tag.pug
 
 //- Tag mixin, used for tweaking what tag we are throwing and do we need to wrap anything here
 
-//- @node-language php
 mixin bemto_tag($tag, $tagMetadata)
   - $settings = $get_bemto_settings()
   - $tagMetadata = (array) ($tagMetadata ?: [])
@@ -14,12 +13,13 @@ mixin bemto_tag($tag, $tagMetadata)
   //- rewriting tag name on different contexts
   - $newTag = $tag ?: $settings['default_tag']
   - $contextIndex = count($bemto_chain_contexts)
+  - $listContext = ($contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'list')
 
   //- Checks for contexts if no tag given
   if !$tag
     if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'inline'
       - $newTag = 'span'
-    else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'list'
+    else if $listContext
       - $newTag = 'li'
     else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'optionlist'
       - $newTag = 'option'
@@ -36,9 +36,9 @@ mixin bemto_tag($tag, $tagMetadata)
       - $newTag = $block ? 'button' : 'input'
     else if isset($attributes['src']) && $attributes['src']
       - $newTag = 'img'
-
+  - $liWrap = ($listContext && $newTag !== 'li')
   //- Contextual wrappers
-  if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'list' && $newTag !== 'li'
+  if $liWrap
     | <li>
   else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] !== 'list' && $bemto_chain_contexts[$contextIndex - 1] !== 'pseudo-list' && $newTag === 'li'
     | <ul>
@@ -64,10 +64,10 @@ mixin bemto_tag($tag, $tagMetadata)
     if isset($attributes['alt']) && $attributes['alt'] === ''
       - $attributes['role'] = 'presentation'
     if !(isset($attributes['src']) && $attributes['src'])
-      if isset($attributes['nosrc_substitute']) && $attributes['nosrc_substitute'] === true
+      if isset($settings['nosrc_substitute']) && $settings['nosrc_substitute'] === true
         - $attributes['src'] = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=='
-      else if isset($attributes['nosrc_substitute']) && $attributes['nosrc_substitute']
-        - $attributes['src'] = $attributes['nosrc_substitute']
+      else if isset($settings['nosrc_substitute']) && $settings['nosrc_substitute']
+        - $attributes['src'] = $settings['nosrc_substitute']
 
   if $newTag === 'input'
     if !(isset($attributes['type']) && $attributes['type'])
@@ -85,5 +85,5 @@ mixin bemto_tag($tag, $tagMetadata)
       block
 
   //- Closing all the wrapper tails
-  if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'list' && $newTag !== 'li'
+  if $liWrap
     | </li>

@@ -2,7 +2,6 @@
 //- Copyright(c) 2012 Roman Komarov <kizu@kizu.ru>
 //- MIT Licensed
 
-//- @node-language php
 -
   $bemto_tag_metadata = [
     'hr' => [
@@ -121,20 +120,47 @@
     ]
   ];
 
-  $get_bemto_tag_type = function ($tagName) use ($bemto_tag_metadata) {
-    $result = 'block';
-    if (isset($bemto_tag_metadata[$tagName]) && $bemto_tag_metadata[$tagName]) {
-      $result = isset($bemto_tag_metadata[$tagName]['type']) && $bemto_tag_metadata[$tagName]['type'] ? $bemto_tag_metadata[$tagName]['type'] : $result;
+  $get_bemto_tag_type = function ($tagName) use (&$bemto_tag_metadata) {
+    if (isset($bemto_tag_metadata[$tagName]) && $bemto_tag_metadata[$tagName] && isset($bemto_tag_metadata[$tagName]['type']) && $bemto_tag_metadata[$tagName]['type']) {
+      return $bemto_tag_metadata[$tagName]['type'];
     }
 
-    return $result;
+    return 'block';
   };
 
-  $get_bemto_tag_content_type = function ($tagName) use ($bemto_tag_metadata) {
-    $result = 'block';
+  $get_bemto_tag_content_type = function ($tagName) use (&$bemto_tag_metadata) {
     if (isset($bemto_tag_metadata[$tagName]) && $bemto_tag_metadata[$tagName]) {
-      $result = isset($bemto_tag_metadata[$tagName]['content_type']) && $bemto_tag_metadata[$tagName]['content_type'] ? $bemto_tag_metadata[$tagName]['content_type'] : $result;
+      if (isset($bemto_tag_metadata[$tagName]['content_type']) && $bemto_tag_metadata[$tagName]['content_type']) {
+        return $bemto_tag_metadata[$tagName]['content_type'];
+      }
+      if (isset($bemto_tag_metadata[$tagName]['type']) && $bemto_tag_metadata[$tagName]['type']) {
+        return $bemto_tag_metadata[$tagName]['type'];
+      }
     }
 
-    return $result;
+    return 'block';
   };
+
+  if (!isset($GLOBALS['__bemto'])) {
+    $GLOBALS['__bemto'] = new stdClass();
+  }
+  $bemto = $GLOBALS['__bemto'];
+  $bemto->get_bemto_tag_type = $get_bemto_tag_type;
+
+  if (!function_exists('get_bemto_tag_type')) {
+    function get_bemto_tag_type($tagName) {
+      global $__bemto;
+
+      return call_user_func($__bemto->get_bemto_tag_type, $tagName);
+    }
+  }
+
+  $bemto->get_bemto_tag_content_type = $get_bemto_tag_content_type;
+
+  if (!function_exists('get_bemto_tag_content_type')) {
+    function get_bemto_tag_content_type($tagName) {
+      global $__bemto;
+
+      return call_user_func($__bemto->get_bemto_tag_content_type, $tagName);
+    }
+  }

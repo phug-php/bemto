@@ -10,14 +10,6 @@ class RenderTest extends AbstractTestCase
 {
     public function getJsCases()
     {
-        $this->renderer = new Renderer([
-            'debug' => true,
-            'execution_max_time' => 180000,
-            'modules' => [
-                JsPhpizePhug::class,
-                PhugBemto::class,
-            ],
-        ]);
         foreach (glob(__DIR__ . '/cases/*.html') as $file) {
             yield [
                 file_get_contents($file),
@@ -41,7 +33,7 @@ class RenderTest extends AbstractTestCase
      */
     public function testRender($expectedOutput, $sourceFile)
     {
-        $this->assertSameHtml($expectedOutput, $this->renderFile($sourceFile));
+        $this->assertSameHtml($expectedOutput, $this->renderFile($sourceFile), 'Unexpected output for ' . basename($sourceFile));
     }
 
     /**
@@ -49,6 +41,14 @@ class RenderTest extends AbstractTestCase
      */
     public function testRenderJs($expectedOutput, $sourceFile)
     {
-        $this->assertSameHtml($expectedOutput, $this->renderFile($sourceFile));
+        $this->renderer = new Renderer([
+            'debug' => true,
+            'execution_max_time' => 180000,
+            'modules' => [
+                JsPhpizePhug::class,
+                PhugBemto::class,
+            ],
+        ]);
+        $this->assertSameHtml($expectedOutput, $this->renderFile($sourceFile), 'Unexpected output for ' . basename($sourceFile));
     }
 }

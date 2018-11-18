@@ -3,32 +3,27 @@
 //- MIT Licensed
 
 //- Some global variables
-//- @node-language php
 -
   $bemto_chain = [];
   $bemto_chain_contexts = ['block'];
-  $bemto_chain_splice = 0;
 
 //- Block
-//- @node-language php
 mixin b($options)
   -
     $get_context = function ($ctx) { $ctx = empty($ctx['context']) ? '' : $ctx['context']; return is_string($ctx) ? $ctx : $ctx[0]; };
     $settings = $get_bemto_settings();
   //- TODO: should we make it generic way for other settings too?
-  //- @node-language php
   if is_array($options) && isset($options['prefix'])
     - $settings['prefix'] = $options['prefix']
 
   //- Rewriting the class for elements and modifiers
-  //- @node-language php
   -
     $tag = $options ? (is_string($options) ? $options : (isset($options['tag']) ? $options['tag'] : '')) : '';
     $options = (array) ($options ?: []);
     $isElement = $options && isset($options['isElement']) && $options['isElement'];
     $tagMetadata = $options && isset($options['metadata']) ? $options['metadata'] : null;
     $block_sets_context = false;
-  //- @node-language php
+
   if !empty($attributes['class'])
     //- Creating and normalizing bemto classes
     - $bemto_classes = $attributes['class']
@@ -108,7 +103,8 @@ mixin b($options)
         - if (preg_match('/^' . $prefix_regex_string . '([A-Za-z0-9]+.*)$/', $klass, $name_with_prefix))
           - $klass = $name_with_prefix[2]
           - $found_prefix = $name_with_prefix[1] ?: ''
-          if !isset($prefix[$found_prefix]) || $prefix[$found_prefix] === true
+          - $found_prefix = isset($prefix[$found_prefix]) ? $prefix[$found_prefix] : null
+          if $found_prefix === null || $found_prefix === true
             - $found_prefix = $name_with_prefix[1]
       - $bemto_object['prefix'] = strtr($found_prefix ?: '', ['-' => '%DASH%', '_' => '%UNDERSCORE%'])
 
@@ -142,6 +138,7 @@ mixin b($options)
       - $bemto_chain[] = $new_context
 
     //- Rendering the classes
+    - var_dump($__pug_attributes, $attributes, $bemto_objects)
     if count($bemto_objects)
       - $new_classes = []
       each $bemto_object in $bemto_objects
@@ -159,37 +156,26 @@ mixin b($options)
     else
       - $attributes['class'] = null
 
-  //- @node-language php
-  if !$isElement && $block_sets_context
-    - $bemto_chain_splice++
+  - $__pug_bemto_chain_splice = (!$isElement && $block_sets_context);
 
-  //- @node-language php
   if $block
-    //- @node-language php
-    +bemto_tag($tag, $tagMetadata)&attributes($attributes)
-      block
+    +bemto_tag($tag, $tagMetadata)&attributes($attributes): block
   else
-    //- @node-language php
     +bemto_tag($tag, $tagMetadata)&attributes($attributes)
 
   //- Closing actions (remove the current block from the chain)
-  //- @node-language php
-  if $bemto_chain_splice > 0
-    - $bemto_chain_splice--
+  if $__pug_bemto_chain_splice
     - $bemto_chain = array_splice($bemto_chain, 0, -1)
-  //- @node-language php
   - $bemto_chain_contexts = array_splice($bemto_chain_contexts, 0, -1)
 
 //- Element
-//- @node-language php
 mixin e($options)
-  //- @node-language php
   unless $options
     - $options = []
-  //- @node-language php
   else if is_string($options)
     - $options = ['tag' => $options]
-  //- @node-language php
   - $options['isElement'] = true
-  //- @node-language php
-  +b($options)&attributes($attributes): block
+  if $block
+    +b($options)&attributes($attributes): block
+  else
+    +b($options)&attributes($attributes)
