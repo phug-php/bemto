@@ -4,7 +4,7 @@
 [![License](https://poser.pugx.org/pug/bemto/license)](https://packagist.org/packages/pug/bemto)
 [![Build Status](https://travis-ci.org/phug-php/bemto.svg?branch=master)](https://travis-ci.org/phug-php/bemto)
 [![StyleCI](https://styleci.io/repos/153140499/shield?style=flat)](https://styleci.io/repos/153140499)
-[![Test Coverage](https://codeclimate.com/github/pphug-phpug/bemto/badges/coverage.svg)](https://codecov.io/github/phug-php/bemto?branch=master)
+[![Test Coverage](https://codeclimate.com/github/phug-php/bemto/badges/coverage.svg)](https://codecov.io/github/phug-php/bemto?branch=master)
 [![Code Climate](https://codeclimate.com/github/phug-php/bemto/badges/gpa.svg)](https://codeclimate.com/github/phug-php/bemto)
 [![Dependencies](https://tidelift.com/badges/github/pug-php/pug)](https://tidelift.com/subscription/pkg/packagist-pug-php-pug?utm_source=packagist-pug-php-pug&utm_medium=referral&utm_campaign=readme)
 [![Backers on Open Collective](https://opencollective.com/pug-php/backers/badge.svg)](#backers)
