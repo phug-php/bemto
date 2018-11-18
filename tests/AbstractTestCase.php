@@ -10,6 +10,11 @@ use XhtmlFormatter\Formatter;
 abstract class AbstractTestCase extends TestCase
 {
     /**
+     * @var array
+     */
+    protected $modules = [];
+
+    /**
      * @var Renderer
      */
     protected $renderer;
@@ -23,9 +28,9 @@ abstract class AbstractTestCase extends TestCase
         $this->renderer = new Renderer([
             'debug' => true,
             'execution_max_time' => 180000,
-            'modules' => [
+            'modules' => array_merge([
                 PhugBemto::class,
-            ],
+            ], $this->modules),
         ]);
     }
 

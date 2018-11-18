@@ -7,10 +7,10 @@ include ../../bemto.pug
   | Hey
 
 -
-  set_bemto_settings({
-    element: '-',
-    modifier: '--'
-  })
+  set_bemto_settings([
+    'element' => '-',
+    'modifier' => '--',
+  ])
 
 +b.block--modifier
   | Hey
@@ -29,9 +29,9 @@ include ../../bemto.pug
 
 
 -
-  set_bemto_settings({
-    flat_elements: false
-  })
+  set_bemto_settings([
+    'flat_elements' => false,
+  ])
 
 +b.block-element
   +e.element2
