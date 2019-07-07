@@ -548,3 +548,9 @@ And that would render to
 ```
 
 There you can see almost all of the bemto features that can be used for any mixin with `attributes` variable attached to any inner bemto block inside of it.
+
+## Security contact information
+
+To report a security vulnerability, please use the
+[Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.
