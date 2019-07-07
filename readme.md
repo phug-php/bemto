@@ -554,3 +554,7 @@ There you can see almost all of the bemto features that can be used for any mixi
 To report a security vulnerability, please use the
 [Tidelift security contact](https://tidelift.com/security).
 Tidelift will coordinate the fix and disclosure.
+
+## Sponsor
+
+[Professionally supported pug/bemto](https://tidelift.com/subscription/pkg/packagist-pug-bemto?utm_source=packagist-pug-bemto&utm_medium=referral&utm_campaign=readme)
