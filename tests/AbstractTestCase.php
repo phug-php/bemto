@@ -45,7 +45,7 @@ abstract class AbstractTestCase extends TestCase
             $error = $exception;
 
             try {
-                $debugFile = 'debug.php';
+                $debugFile = __DIR__ . '/../debug.php';
                 file_put_contents($debugFile, $this->renderer->compileFile($sourceFile));
                 include $debugFile;
             } catch (\Throwable $exception) {

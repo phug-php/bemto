@@ -26,7 +26,7 @@ mixin bemto_tag($tag, $tagMetadata)
 
   //- Attributes context checks
   //- Only when no actual tag is given
-  if !$tag || $tag === 'span' || $tag === 'div'
+  if (!$tag) || ($tag === 'span') || ($tag === 'div')
     if isset($attributes['href']) && $attributes['href']
       - $newTag = 'a'
     if isset($attributes['for']) && $attributes['for']
@@ -40,10 +40,10 @@ mixin bemto_tag($tag, $tagMetadata)
   //- Contextual wrappers
   if $liWrap
     | <li>
-  else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] !== 'list' && $bemto_chain_contexts[$contextIndex - 1] !== 'pseudo-list' && $newTag === 'li'
+  else if $contextIndex && ($bemto_chain_contexts[$contextIndex - 1] !== 'list') && ($bemto_chain_contexts[$contextIndex - 1] !== 'pseudo-list') && ($newTag === 'li')
     | <ul>
     - $bemto_chain_contexts[count($bemto_chain_contexts)] = 'pseudo-list'
-  else if $contextIndex && $bemto_chain_contexts[$contextIndex - 1] === 'pseudo-list' && $newTag !== 'li'
+  else if $contextIndex && ($bemto_chain_contexts[$contextIndex - 1] === 'pseudo-list') && ($newTag !== 'li')
     | </ul>
     - $bemto_chain_contexts = array_splice($bemto_chain_contexts, 0, -1)
 

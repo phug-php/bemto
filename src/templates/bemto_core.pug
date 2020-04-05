@@ -54,7 +54,7 @@ mixin b($options)
       //- If the class is a modifier, add it to the previous object
       //- FIXME: `+b._mod._mod` — raw classes should be treated as raw ones
       - if (preg_match('/^(?!' . $settings['element'] . '[A-Za-z0-9])' . $settings['modifier'] . '(.+)$/', $klass, $modifier_class) && $bemto_objects_count && isset($bemto_objects[$bemto_objects_count - 1]['name']) && $bemto_objects[$bemto_objects_count - 1]['name'])
-        if !isset($bemto_objects[$bemto_objects_count - 1]['modifiers']) || !$bemto_objects[$bemto_objects_count - 1]['modifiers']
+        if (!isset($bemto_objects[$bemto_objects_count - 1]['modifiers'])) || (!$bemto_objects[$bemto_objects_count - 1]['modifiers'])
           - $bemto_objects[$bemto_objects_count - 1]['modifiers'] = []
         - $bemto_objects[$bemto_objects_count - 1]['modifiers'][] = $modifier_class[1]
         - continue
@@ -79,7 +79,7 @@ mixin b($options)
       - if (preg_match('/^(.*?[A-Za-z0-9])(?!' . $settings['element'] . '[A-Za-z0-9])' . $settings['modifier'] . '(.+)$/', $klass, $name_with_modifier))
         - $klass = $name_with_modifier[1]
 
-        if !isset($bemto_object['modifiers']) || !$bemto_object['modifiers']
+        if (!isset($bemto_object['modifiers'])) || (!$bemto_object['modifiers'])
           - $bemto_object['modifiers'] = []
         - $bemto_object['modifiers'][] = $name_with_modifier[2]
 
@@ -93,9 +93,9 @@ mixin b($options)
         - $prefix_regex_test = []
         if is_array($prefix)
           each $value, $key in $prefix
-            if is_string($key) && $key !== '' && !in_array($key, $prefix_regex_test)
+            if is_string($key) && ($key !== '') && (!in_array($key, $prefix_regex_test))
               - $prefix_regex_test[] = $key
-            if is_string($value) && $value !== '' && !in_array($value, $prefix_regex_test)
+            if is_string($value) && ($value !== '') && (!in_array($value, $prefix_regex_test))
               - $prefix_regex_test[] = $value
 
           - $prefix_regex_string = '(' . implode('|', $prefix_regex_test) . ')?'
@@ -104,7 +104,7 @@ mixin b($options)
           - $klass = $name_with_prefix[2]
           - $found_prefix = $name_with_prefix[1] ?: ''
           - $found_prefix = isset($prefix[$found_prefix]) ? $prefix[$found_prefix] : null
-          if $found_prefix === null || $found_prefix === true
+          if ($found_prefix === null) || ($found_prefix === true)
             - $found_prefix = $name_with_prefix[1]
       - $bemto_object['prefix'] = strtr($found_prefix ?: '', ['-' => '%DASH%', '_' => '%UNDERSCORE%'])
 
