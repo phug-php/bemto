@@ -12,7 +12,7 @@ class PhugBemto extends AbstractCompilerModule
         parent::__construct($container);
 
         $file = realpath(__DIR__ . '/../../bemto.pug');
-        $includes = $container->getOption('includes');
+        $includes = $container->getOption('includes') ?? [];
 
         if (!in_array($file, $includes)) {
             $includes[] = $file;

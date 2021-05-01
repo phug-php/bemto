@@ -22,16 +22,19 @@ abstract class AbstractTestCase extends TestCase
     /**
      * @throws \Phug\RendererException
      */
-    protected function setUp()
+    protected function getRenderer(): Renderer
     {
-        parent::setUp();
-        $this->renderer = new Renderer([
-            'debug' => true,
-            'execution_max_time' => 180000,
-            'modules' => array_merge([
-                PhugBemto::class,
-            ], $this->modules),
-        ]);
+        if (!isset($this->renderer)) {
+            $this->renderer = new Renderer([
+                'debug'              => true,
+                'execution_max_time' => 180000,
+                'modules'            => array_merge([
+                    PhugBemto::class,
+                ], $this->modules),
+            ]);
+        }
+
+        return $this->renderer;
     }
 
     protected function renderFile($sourceFile)
@@ -40,13 +43,13 @@ abstract class AbstractTestCase extends TestCase
         $actualOutput = null;
 
         try {
-            $actualOutput = $this->renderer->renderFile($sourceFile);
+            $actualOutput = $this->getRenderer()->renderFile($sourceFile);
         } catch (\Throwable $exception) {
             $error = $exception;
 
             try {
                 $debugFile = __DIR__ . '/../debug.php';
-                file_put_contents($debugFile, $this->renderer->compileFile($sourceFile));
+                file_put_contents($debugFile, $this->getRenderer()->compileFile($sourceFile));
                 include $debugFile;
             } catch (\Throwable $exception) {
                 throw new \Exception('Error in ' . $sourceFile . "\n" . $exception->getMessage(), 0, $exception);
@@ -71,6 +74,10 @@ abstract class AbstractTestCase extends TestCase
         $html = preg_replace('/(<[a-z][^>]*>)\s+<\//', '$1</', $html);
         $html = preg_replace('/([a-z"\'])\/>/', '$1 />', $html);
         $html = preg_replace('/(<[a-z][^>]*)\s\/>/', '$1>', $html);
+
+        if (version_compare(PHP_VERSION, '8.1.0-dev', '>=')) {
+            $html = str_replace('&#039;', "'", $html);
+        }
 
         return $html;
     }
