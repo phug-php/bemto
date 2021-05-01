@@ -11,13 +11,12 @@
   ],
   "require": {
     "php": ">=7.0",
-    "phug/compiler": "^0.5.0 || ^1.0.0",
-    "phug/formatter": "^0.5.42 || ^1.0.0"
+    "phug/compiler": "^1.0.0",
+    "phug/formatter": "^1.0.0"
   },
   "require-dev": {
-    "phug/phug": "^0.3.2 || ^1.0.0",
-    "phpunit/phpunit": ">=4.8.35 <6.0",
-    "codeclimate/php-test-reporter": "dev-master",
+    "phug/phug": "^1.0.0",
+    "phpunit/phpunit": "^6.5 || ^7.5 || ^8.5",
     "machy8/xhtml-formatter": "^1.0",
     "js-phpize/js-phpize-phug": "^2.1"
   },
