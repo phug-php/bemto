@@ -26,9 +26,9 @@ abstract class AbstractTestCase extends TestCase
     {
         if (!isset($this->renderer)) {
             $this->renderer = new Renderer([
-                'debug'              => true,
+                'debug' => true,
                 'execution_max_time' => 180000,
-                'modules'            => array_merge([
+                'modules' => array_merge([
                     PhugBemto::class,
                 ], $this->modules),
             ]);

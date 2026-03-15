@@ -11,12 +11,12 @@
   ],
   "require": {
     "php": ">=7.0",
-    "phug/compiler": "^1.0.0",
-    "phug/formatter": "^1.0.0"
+    "phug/compiler": "^1.0.0 || ^2.0.0",
+    "phug/formatter": "^1.0.0 || ^2.0.0"
   },
   "require-dev": {
     "phug/phug": "^1.0.0",
-    "phpunit/phpunit": "^6.5 || ^7.5 || ^8.5",
+    "phpunit/phpunit": "^6.5.14 || ^7.5.20 || ^8.5.52",
     "machy8/xhtml-formatter": "^1.0",
     "js-phpize/js-phpize-phug": "^2.1"
   },
